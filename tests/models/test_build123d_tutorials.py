@@ -1,4 +1,12 @@
 # repl-client
+"""
+## TTT Build123d tutorials
+
+This is a reimplementation of [Too Tall Toby tutorials][tttt] documenation
+section using `build_line` as a main draft tool.
+
+[tttt]: https://build123d.readthedocs.io/en/latest/tttt.html
+"""
 import sys
 sys.modules.pop('build123d_draft', None)
 
@@ -74,6 +82,7 @@ def test_ppack_01_02():
 
 
 @slist
+@pytest.mark.rotate((90, 0))
 def test_ppack_01_03():
     l = build_line(Plane.XZ).append(
         Y(-34), X(95), Y(34), op_fillet(18, 2),

@@ -1011,7 +1011,6 @@ def export_png(fname, part, size=(720, 480), bg=None, transparent=True, loc=None
     if loc:
         view.Turn(0, loc[1]*dpr, 0)
     view.FitAll(0.01, False)
-    # help(view)
 
     image = OCP.Image.Image_AlienPixMap()
     view.ToPixMap(image, *rsize)

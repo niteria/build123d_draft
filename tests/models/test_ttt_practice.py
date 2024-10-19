@@ -1,4 +1,13 @@
 # repl-client
+"""
+## TTT Practice
+
+[TTT practice][ttt-practice] is nice game mode for CADing.
+
+Models here are augmented for spoil-free results.
+
+[ttt-practice]: https://www.tootalltoby.com/practice/
+"""
 import os
 import sys
 sys.modules.pop('build123d_draft', None)
