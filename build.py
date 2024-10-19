@@ -33,6 +33,7 @@ def main():
         for m in s['models']:
             content.append(f'### {m["title"]}\n')
             content.append(f'![](./assets/{m["img"]})\n')
+            # content.append(f'<img src="./assets/{m["img"]}" height="480px" />')
             content.append("```python")
             content.append(m['source'])
             content.append("```\n\n")

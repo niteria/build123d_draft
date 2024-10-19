@@ -188,6 +188,7 @@ def test_24_07_LB3_adj_base():
 
 ```python
 @slist
+@pytest.mark.rotate((110, 0))
 def test_24_07_LB1_foot_holder():
     """
     Source: TTT: https://www.tootalltoby.com/challenge/2024-07/drawings/
@@ -308,6 +309,7 @@ def test_24_04_LB2_rod_end_mount():
 
 ```python
 @slist
+@pytest.mark.rotate((10, 5))
 def test_24_04_LB3_end_base():
     """
     Source:https://www.tootalltoby.com/challenge/2024-04/drawings/
@@ -353,6 +355,7 @@ def test_24_04_LB3_end_base():
 
 ```python
 @slist
+@pytest.mark.rotate((15, 10))
 def test_2024_03_10_offset_support():
     """
     Source: https://www.tootalltoby.com/leaderboard/2024-03/
@@ -438,6 +441,7 @@ def test_2024_03_12_side_spacer():
 
 ```python
 @slist
+@pytest.mark.rotate((0, -5))
 def test_corner_cap():
     """
     Source: https://www.tootalltoby.com/practice/a441dcaa-0d1c-42f0-b037-73786e93a9ea
@@ -473,8 +477,8 @@ def test_corner_cap():
 ![](./assets/test_ttt_practice_test_lstop_simple.png)
 
 ```python
-@set_current
 @slist
+@pytest.mark.rotate((0, -5))
 def test_lstop_simple():
     """
     Source: https://www.tootalltoby.com/practice/6926892f-c1e3-4d84-8ed8-359eb98d51b8
@@ -512,6 +516,7 @@ def test_lstop_simple():
 
 ```python
 @slist
+@pytest.mark.rotate((100, 0))
 def test_ppack_01_01():
     l = build_line(Plane.XZ.offset(25)).append(
         Y(42),
@@ -546,6 +551,7 @@ def test_ppack_01_01():
 
 ```python
 @slist
+@pytest.mark.rotate((60, 15))
 def test_ppack_01_02():
     l = build_line(X(49/2), Plane.XZ).append(
         Y(40),
@@ -670,6 +676,7 @@ def test_ppack_01_06():
 
 ```python
 @slist
+@pytest.mark.rotate((10, 0))
 def test_ppack_01_09():
     cl = build_line(Plane.XZ).append(
         op_line(angle=-45, until=YY(-45)),
