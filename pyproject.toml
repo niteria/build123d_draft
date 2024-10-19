@@ -1,3 +1,23 @@
+[tool.poetry]
+name = "build123d-draft"
+version = "0.1.0"
+description = "Helpers for build123d"
+authors = ["Anton Bobrov"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = ">=3.8"
+build123d = "^0.7.0"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.3.3"
+pillow = "^11.0.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
 [tool.pytest.ini_options]
 markers = [
     "current: mark a current test to execute",
