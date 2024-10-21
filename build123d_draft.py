@@ -1010,15 +1010,24 @@ def export_image(part, size=(720, 480), bg=None, transparent=True, loc=None, cli
 
     prs = OCP.AIS.AIS_Shape(part.wrapped)
     if clip:
+        outline = part & Face.make_plane(clip)
+
+        for w in outline.wires():
+            prs_outline = OCP.AIS.AIS_Shape(w.wrapped)
+            prs_outline.SetColor(ocp_color(0.9, 0.1, 0.1))
+            prs_outline.SetWidth(3)
+            ctx.Display(prs_outline, OCP.AIS.AIS_Shaded, -1, False)
+
         cp = OCP.Graphic3d.Graphic3d_ClipPlane(clip.wrapped)
         tx = OCP.Graphic3d.Graphic3d_Texture2D(OCP.TCollection.TCollection_AsciiString('resources/hatch_2.png'))
         tx.GetParams().SetScale(OCP.gp.gp_Vec2f(0.05, 0.05))
-        # tx.EnableModulate()
+        tx.EnableModulate()
         tx.EnableRepeat()
 
         cp.SetCapping(True)
         cp.SetCappingTexture(tx)
         cp.SetCappingColor(color)
+        cp.SetUseObjectMaterial(True)
         prs.AddClipPlane(cp)
 
     ctx.Display(prs, OCP.AIS.AIS_Shaded, -1, False)
