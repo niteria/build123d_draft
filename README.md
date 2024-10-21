@@ -1,6 +1,6 @@
 `build123d_draft` is a collection of utilities/helpers for an amazing CAD
 [Build123d][build123d]. Build123d did a great work for hiding OCCT complexity
-behind nice pythonic interface. Though my experience with the library reveal
+behind nice pythonic interface. Though my experience with the library revealed
 some repetitive patterns. `build123d_draft` is an attempt to abstract these
 patterns.
 
@@ -37,6 +37,12 @@ names and make models fully parametric.
 Here are examples showcasing `build123d_draft` in action.
 
 
+* [TTT Challenges](#test_ttt_monthly_challenge)
+* [TTT Practice](#test_ttt_practice)
+* [TTT Build123d tutorials](#test_build123d_tutorials)
+
+
+<a name="test_ttt_monthly_challenge"></a>
 
 ## TTT Challenges
 
@@ -45,6 +51,45 @@ It's a monthly competition with available drafts and final
 part mass. It's an easiest way to train your skills.
 
 [ttt-challenges]: https://www.tootalltoby.com/Leaderboard/
+
+
+### test_24_04_LB1_u_joint_fork
+
+Source:https://www.tootalltoby.com/challenge/2024-04/drawings/  
+Draft: https://www.tootalltoby.com/media/challenges/events/models/D_LEADERBOARD_CHALLENGE_MODEL_1_IMAGE_-_APRIL.png
+
+![](./assets/test_ttt_monthly_challenge_test_24_04_LB1_u_joint_fork.png)
+
+```python
+l1 = build_line(Plane.XZ).append(
+    X(42/2), Y(51), op_fillet(12),
+    X(14), YY(-14), XX(0), op_fillet(26),
+    op_close(),
+)
+part = l1.extrude(38/2+1, both=True) # +1 to give space for fillet
+
+l2 = build_line(Plane.YZ).append(
+    op_arc(15, 17/2-90, start=Y(51)),
+    op_line(until=XX(38/2)), YY(0), op_fillet(115),
+    X(5), op_close(Axis.X.offset(Y=60))
+)
+part -= mirror_add(l2.extrude(100))
+
+loc = Pos(X=70/2, Z=51-15) * R.X
+part += loc * Cylinder(70/2-36/2, r=15, align=A.u)
+part -= loc * CounterSinkHole(13/2, 19/2, 50, 100)
+part = mirror_add(part, Plane.YZ)
+
+b = 51 - 15 - 65
+c = Z(b) * Cylinder(abs(-5 - b), d=32, align=A.d)
+part, edges = new_edges_add(c, part)
+part = fillet(edges, 3)
+part -= mirror_add(Y(-38/2) * Box(100, 5, 14, align=A.nu))
+
+part -= c.new(50, d=21)
+
+
+```
 
 
 ### test_22_T_32_pivot_plate
@@ -234,45 +279,6 @@ part -= Pos(X=-62-42, Z=9) * -R.X * CounterSinkHole(6/2, 14/2, 50, 82)
 ```
 
 
-### test_24_04_LB1_u_joint_fork
-
-Source:https://www.tootalltoby.com/challenge/2024-04/drawings/  
-Draft: https://www.tootalltoby.com/media/challenges/events/models/D_LEADERBOARD_CHALLENGE_MODEL_1_IMAGE_-_APRIL.png
-
-![](./assets/test_ttt_monthly_challenge_test_24_04_LB1_u_joint_fork.png)
-
-```python
-l1 = build_line(Plane.XZ).append(
-    X(42/2), Y(51), op_fillet(12),
-    X(14), YY(-14), XX(0), op_fillet(26),
-    op_close(),
-)
-part = l1.extrude(38/2+1, both=True) # +1 to give space for fillet
-
-l2 = build_line(Plane.YZ).append(
-    op_arc(15, 17/2-90, start=Y(51)),
-    op_line(until=XX(38/2)), YY(0), op_fillet(115),
-    X(5), op_close(Axis.X.offset(Y=60))
-)
-part -= mirror_add(l2.extrude(100))
-
-loc = Pos(X=70/2, Z=51-15) * R.X
-part += loc * Cylinder(70/2-36/2, r=15, align=A.u)
-part -= loc * CounterSinkHole(13/2, 19/2, 50, 100)
-part = mirror_add(part, Plane.YZ)
-
-b = 51 - 15 - 65
-c = Z(b) * Cylinder(abs(-5 - b), d=32, align=A.d)
-part, edges = new_edges_add(c, part)
-part = fillet(edges, 3)
-part -= mirror_add(Y(-38/2) * Box(100, 5, 14, align=A.nu))
-
-part -= c.new(50, d=21)
-
-
-```
-
-
 ### test_24_04_LB2_rod_end_mount
 
 Source:https://www.tootalltoby.com/challenge/2024-04/drawings/  
@@ -423,6 +429,7 @@ part += l.extrude(6, both=True)
 ```
 
 
+<a name="test_ttt_practice"></a>
 
 ## TTT Practice
 
@@ -494,6 +501,7 @@ part += rib
 ```
 
 
+<a name="test_build123d_tutorials"></a>
 
 ## TTT Build123d tutorials
 

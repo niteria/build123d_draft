@@ -27,6 +27,44 @@ sadd = slist.append
 
 
 @slist
+@pytest.mark.views(None, (0, 70), size=(480, 480))
+def test_24_04_LB1_u_joint_fork():
+    """
+    Source:https://www.tootalltoby.com/challenge/2024-04/drawings/  
+    Draft: https://www.tootalltoby.com/media/challenges/events/models/D_LEADERBOARD_CHALLENGE_MODEL_1_IMAGE_-_APRIL.png
+    """
+    l1 = build_line(Plane.XZ).append(
+        X(42/2), Y(51), op_fillet(12),
+        X(14), YY(-14), XX(0), op_fillet(26),
+        op_close(),
+    )
+    part = l1.extrude(38/2+1, both=True) # +1 to give space for fillet
+
+    l2 = build_line(Plane.YZ).append(
+        op_arc(15, 17/2-90, start=Y(51)),
+        op_line(until=XX(38/2)), YY(0), op_fillet(115),
+        X(5), op_close(Axis.X.offset(Y=60))
+    )
+    part -= mirror_add(l2.extrude(100))
+
+    loc = Pos(X=70/2, Z=51-15) * R.X
+    part += loc * Cylinder(70/2-36/2, r=15, align=A.u)
+    part -= loc * CounterSinkHole(13/2, 19/2, 50, 100)
+    part = mirror_add(part, Plane.YZ)
+
+    b = 51 - 15 - 65
+    c = Z(b) * Cylinder(abs(-5 - b), d=32, align=A.d)
+    part, edges = new_edges_add(c, part)
+    part = fillet(edges, 3)
+    part -= mirror_add(Y(-38/2) * Box(100, 5, 14, align=A.nu))
+
+    part -= c.new(50, d=21)
+
+    assert part.volume*densc == approx(589.04, abs=0.01)
+    return part
+
+
+@slist
 def test_22_T_32_pivot_plate():
     l = build_line(Plane.XZ).append(
         Y(2.625-1.5), op_arc(1.5, -180, name='a'),
@@ -49,6 +87,7 @@ def test_22_T_32_pivot_plate():
 
 
 @slist
+@pytest.mark.views(None, (-90, 0), size=(480, 480))
 def test_24_05_LB1_clamp_bracket():
     """
     Source: https://www.tootalltoby.com/challenge/2024-05/drawings/
@@ -82,6 +121,7 @@ def test_24_05_LB1_clamp_bracket():
 
 
 @slist
+@pytest.mark.views((45, 0), (45, 70), size=(480, 480))
 def test_24_05_LB2_chamber():
     """
     Source: https://www.tootalltoby.com/challenge/2024-05/drawings/
@@ -140,6 +180,7 @@ def test_24_05_LB3_arm_housing():
 
 
 @slist
+@pytest.mark.views((-90, 0))
 def test_24_07_LB3_adj_base():
     """
     Source: TTT: https://www.tootalltoby.com/challenge/2024-07/drawings/  
@@ -174,7 +215,7 @@ def test_24_07_LB3_adj_base():
 
 
 @slist
-@pytest.mark.rotate((110, 0))
+@pytest.mark.views((110, 0))
 def test_24_07_LB1_foot_holder():
     """
     Source: TTT: https://www.tootalltoby.com/challenge/2024-07/drawings/  
@@ -198,43 +239,6 @@ def test_24_07_LB1_foot_holder():
     part -= Pos(X=-62-42, Z=9) * -R.X * CounterSinkHole(6/2, 14/2, 50, 82)
 
     assert part.volume*densc == approx(2013.97, abs=0.01)
-    return part
-
-
-@slist
-def test_24_04_LB1_u_joint_fork():
-    """
-    Source:https://www.tootalltoby.com/challenge/2024-04/drawings/  
-    Draft: https://www.tootalltoby.com/media/challenges/events/models/D_LEADERBOARD_CHALLENGE_MODEL_1_IMAGE_-_APRIL.png
-    """
-    l1 = build_line(Plane.XZ).append(
-        X(42/2), Y(51), op_fillet(12),
-        X(14), YY(-14), XX(0), op_fillet(26),
-        op_close(),
-    )
-    part = l1.extrude(38/2+1, both=True) # +1 to give space for fillet
-
-    l2 = build_line(Plane.YZ).append(
-        op_arc(15, 17/2-90, start=Y(51)),
-        op_line(until=XX(38/2)), YY(0), op_fillet(115),
-        X(5), op_close(Axis.X.offset(Y=60))
-    )
-    part -= mirror_add(l2.extrude(100))
-
-    loc = Pos(X=70/2, Z=51-15) * R.X
-    part += loc * Cylinder(70/2-36/2, r=15, align=A.u)
-    part -= loc * CounterSinkHole(13/2, 19/2, 50, 100)
-    part = mirror_add(part, Plane.YZ)
-
-    b = 51 - 15 - 65
-    c = Z(b) * Cylinder(abs(-5 - b), d=32, align=A.d)
-    part, edges = new_edges_add(c, part)
-    part = fillet(edges, 3)
-    part -= mirror_add(Y(-38/2) * Box(100, 5, 14, align=A.nu))
-
-    part -= c.new(50, d=21)
-
-    assert part.volume*densc == approx(589.04, abs=0.01)
     return part
 
 
@@ -274,7 +278,7 @@ def test_24_04_LB2_rod_end_mount():
 
 
 @slist
-@pytest.mark.rotate((10, 5))
+@pytest.mark.views((10, 5), (100, 15))
 def test_24_04_LB3_end_base():
     """
     Source:https://www.tootalltoby.com/challenge/2024-04/drawings/  
@@ -313,7 +317,7 @@ def test_24_04_LB3_end_base():
 
 
 @slist
-@pytest.mark.rotate((15, 10))
+@pytest.mark.views((15, 10))
 def test_2024_03_10_offset_support():
     """
     Source: https://www.tootalltoby.com/leaderboard/2024-03/  

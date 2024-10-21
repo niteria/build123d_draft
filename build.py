@@ -23,6 +23,7 @@ def collect_models(module_path):
     m = runpy.run_path(module_path)
     section = {'models': [], 'body': m.get('__doc__')}
     section['title'] = module_path.stem
+    section['id'] = module_path.stem
 
     for k, v in m.items():
         if k.startswith('test_'):
@@ -37,13 +38,19 @@ def main():
         sections.append(collect_models(p))
 
     content = [open('README.header.md').read() + '\n']
+    toc = []
     for s in sections:
         if not s['models']:
             continue
+        content.append(f'<a name="{s['id']}"></a>')
         if s['body']:
             content.append(s['body'] + '\n')
+            title = s['body'].strip().splitlines()[0].lstrip('#').strip()
         else:
+            title = s["title"]
             content.append(f'## {s["title"]}\n')
+        toc.append(f'* [{title}](#{s['id']})')
+
         for m in s['models']:
             content.append(f'### {m["title"]}\n')
             if m['body']:
@@ -53,6 +60,8 @@ def main():
             content.append("```python")
             content.append(m['source'])
             content.append("```\n\n")
+
+    content.insert(1, '\n'.join(toc) + '\n\n')
 
     with open('README.md', 'w') as f:
         f.write('\n'.join(content))

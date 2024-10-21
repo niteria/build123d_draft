@@ -14,6 +14,7 @@ from build123d import *
 from build123d_draft import *
 from pytest import approx
 import pytest
+from ..conftest import view
 
 
 densa = 1020e-6
@@ -25,7 +26,7 @@ sadd = slist.append
 
 
 @slist
-@pytest.mark.rotate((100, 0))
+@pytest.mark.views((100, 0))
 def test_ppack_01_01():
     l = build_line(Plane.XZ.offset(25)).append(
         Y(42),
@@ -53,7 +54,7 @@ def test_ppack_01_01():
 
 
 @slist
-@pytest.mark.rotate((60, 15))
+@pytest.mark.views((60, 15), view(60, 15, clip=-Plane.XZ), size=(480, 480))
 def test_ppack_01_02():
     l = build_line(X(49/2), Plane.XZ).append(
         Y(40),
@@ -82,7 +83,7 @@ def test_ppack_01_02():
 
 
 @slist
-@pytest.mark.rotate((90, 0))
+@pytest.mark.views((90, 0))
 def test_ppack_01_03():
     l = build_line(Plane.XZ).append(
         Y(-34), X(95), Y(34), op_fillet(18, 2),
@@ -151,7 +152,7 @@ def test_ppack_01_06():
 
 
 @slist
-@pytest.mark.rotate((10, 0))
+@pytest.mark.views((10, 0))
 def test_ppack_01_09():
     cl = build_line(Plane.XZ).append(
         op_line(angle=-45, until=YY(-45)),

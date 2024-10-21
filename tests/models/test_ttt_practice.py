@@ -28,7 +28,7 @@ sadd = slist.append
 
 
 @slist
-@pytest.mark.rotate((0, -5))
+@pytest.mark.views((0, -5))
 def test_corner_cap():
     """
     Source: https://www.tootalltoby.com/practice/a441dcaa-0d1c-42f0-b037-73786e93a9ea
@@ -58,7 +58,7 @@ def test_corner_cap():
 
 
 @slist
-@pytest.mark.rotate((0, -5))
+@pytest.mark.views((0, -5))
 def test_lstop_simple():
     """
     Source: https://www.tootalltoby.com/practice/6926892f-c1e3-4d84-8ed8-359eb98d51b8

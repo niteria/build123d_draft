@@ -2,6 +2,8 @@ import sys
 import functools
 from itertools import chain as it_chain
 import math
+import io
+
 from build123d import *
 from build123d import topology
 from build123d.build_common import WorkplaneList, Builder, LocationList
@@ -974,7 +976,7 @@ def render_context(size, bg):
     return view, ctx
 
 
-def export_png(fname, part, size=(720, 480), bg=None, transparent=True, loc=None):
+def export_image(part, size=(720, 480), bg=None, transparent=True, loc=None, clip=None):
     # scale = 2.0
     # rparams = view.ChangeRenderingParams()
     # rparams.Resolution = int(96.0 * scale + 0.5)
@@ -1000,30 +1002,50 @@ def export_png(fname, part, size=(720, 480), bg=None, transparent=True, loc=None
     drawer.SetFaceBoundaryDraw(True)
     drawer.ShadingAspect().SetColor(color)
 
-    if loc:
-        part = RZ(loc[0]) * part
+    # if clip is not None:
+    #     part = split(part, clip)
+
+    # if loc is not None:
+    #     part = RZ(loc[0]) * part
 
     prs = OCP.AIS.AIS_Shape(part.wrapped)
+    if clip:
+        cp = OCP.Graphic3d.Graphic3d_ClipPlane(clip.wrapped)
+        tx = OCP.Graphic3d.Graphic3d_Texture2D(OCP.TCollection.TCollection_AsciiString('resources/hatch_2.png'))
+        tx.GetParams().SetScale(OCP.gp.gp_Vec2f(0.05, 0.05))
+        # tx.EnableModulate()
+        tx.EnableRepeat()
+
+        cp.SetCapping(True)
+        cp.SetCappingTexture(tx)
+        cp.SetCappingColor(color)
+        prs.AddClipPlane(cp)
+
     ctx.Display(prs, OCP.AIS.AIS_Shaded, -1, False)
 
+    view.SetAxis(0, 0, 0, 0, 0, -1)
     view.SetProj(OCP.V3d.V3d_TypeOfOrientation_Zup_AxoRight)
 
     if loc:
-        view.Turn(0, loc[1]*dpr, 0)
+        view.Rotate(loc[0]*dpr)
+        view.Rotate(0, loc[1]*dpr, 0)
+
     view.FitAll(0.01, False)
 
     image = OCP.Image.Image_AlienPixMap()
     view.ToPixMap(image, *rsize)
-    image.Save(OCP.TCollection.TCollection_AsciiString(fname))
+    buf = io.BytesIO()
+    image.Save(buf, OCP.TCollection.TCollection_AsciiString('.png'))
+
+    from PIL import Image
+    out = Image.open(buf)
 
     if transparent:
-        from PIL import Image
         import numpy as np
-
-        img = Image.open(fname).convert('RGBA')
-        d = np.array(img)
+        out = out.convert('RGBA')
+        d = np.array(out)
         key_color = tuple(int(it*255) for it in bg) + (255,)
         d[(d == key_color).all(axis=-1)] = [0, 0, 0, 0]
         out = Image.fromarray(d, mode='RGBA')
-        out = out.resize(size)
-        out.save(fname)
+
+    return out.resize(size)

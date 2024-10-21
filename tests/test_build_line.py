@@ -28,7 +28,6 @@ def assert_cont_edges(edges, *points):
     assert epoints == points
 
 
-@pytest.mark.current
 def test_trim():
     l = build_line().append(
         op_line(start=XX(10), to=XX(5)),
