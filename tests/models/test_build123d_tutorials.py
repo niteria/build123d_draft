@@ -7,23 +7,17 @@ section using `build_line` as a main draft tool.
 
 [tttt]: https://build123d.readthedocs.io/en/latest/tttt.html
 """
-import sys
-sys.modules.pop('build123d_draft', None)
-
 from build123d import *
 from build123d_draft import *
 from pytest import approx
 import pytest
-from ..conftest import view
 
+from tests.conftest import view
+from build123d_draft.testing import *
 
 densa = 1020e-6
 densb = 2700e-6
 densc = 7800e-6
-
-slist = ShowList()
-sadd = slist.append
-
 
 @slist
 @pytest.mark.views((100, 0))
@@ -61,13 +55,13 @@ def test_ppack_01_02():
         op_ellipse_arc(20, 8, 0, 90),
         op_close(Axis.Y)
     )
-    base = l.revolvez()
+    base = l.revolvey()
 
     hl = build_line(Plane.XZ).append(
         op_arc(17, 180, center=(-15, 20), start_angle=90))
     handle = hl.sweep(Ellipse(2, 5))
 
-    part, edges = new_edges_add(handle, base)
+    _, edges = new_edges_add(handle, base)
     part = fillet(edges, 1)
 
     il = build_line(X(42/2), Plane.XZ).append(
@@ -76,7 +70,7 @@ def test_ppack_01_02():
         op_fillet(3),
         op_close(Axis.Y)
     )
-    part -= il.revolvez()
+    part -= il.revolvey()
 
     assert part.volume*densa == approx(43.09, abs=0.01)
     return part
@@ -112,7 +106,7 @@ def test_ppack_01_04():
 
     c1 = Cylinder(7+21-8, d=38, align=A.d)
 
-    part, edges = new_edges_add(c1, base)
+    _, edges = new_edges_add(c1, base)
     part = fillet(edges.filter_by(Plane.XY), 4)
     part &= X(-38/2) * Box(80+38, 38, 100, align=A.w)
 
@@ -139,7 +133,7 @@ def test_ppack_01_06():
     base = mirror_add(base, Plane.YZ)
 
     c = RZ(-90) * Cylinder(36, d=30, align=A.d)
-    part, edges = new_edges_add(c, Box(50, 30, 22, align=A.sd))
+    _, edges = new_edges_add(c, Box(50, 30, 22, align=A.sd))
     part = fillet(edges.filter_by(Plane.XY), 6)
     part = base + (part & Box(30, 60, 100, align=A.d))
 
@@ -178,7 +172,7 @@ def test_ppack_01_09():
     p3 = l3.extrude(13)
     p3 -= mirror_add(Pos(17-69, 75/2-17, 13) * cbore_d(15, 4, 8, 13))
 
-    part, edges = new_edges_add(p2+p3, p1)
+    _, edges = new_edges_add(p2+p3, p1)
     part = fillet(edges, 16)
 
     assert part.volume*densb == approx(307.23, abs=0.01)
@@ -212,8 +206,4 @@ def test_23_T_24_curved_support():
 
 
 if __name__ == '__main__':
-    from yacv_server import show
-
-    sadd(origin=Sphere(1))
-    set_current.fn()
-    show(*slist.objects, names=slist.names)
+    main_yacv()

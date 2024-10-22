@@ -1,3 +1,5 @@
+![animation](./resources/animation.gif)
+
 `build123d_draft` is a collection of utilities/helpers for an amazing CAD
 [Build123d][build123d]. Build123d did a great work for hiding OCCT complexity
 behind nice pythonic interface. Though my experience with the library revealed

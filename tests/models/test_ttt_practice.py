@@ -8,14 +8,12 @@ Models here are augmented for spoil-free results.
 
 [ttt-practice]: https://www.tootalltoby.com/practice/
 """
-import os
-import sys
-sys.modules.pop('build123d_draft', None)
-
 from build123d import *
 from build123d_draft import *
 from pytest import approx
 import pytest
+
+from build123d_draft.testing import *
 
 
 LBF = 25.4**3 / 1000 / 0.45359237
@@ -23,15 +21,12 @@ densa = 1020e-6
 densb = 2700e-6
 densc = 7800e-6
 
-slist = ShowList()
-sadd = slist.append
-
 
 @slist
 @pytest.mark.views((0, -5))
 def test_corner_cap():
     """
-    Source: https://www.tootalltoby.com/practice/a441dcaa-0d1c-42f0-b037-73786e93a9ea
+    [Source](https://www.tootalltoby.com/practice/a441dcaa-0d1c-42f0-b037-73786e93a9ea).
     """
     l = build_line(Plane.XZ).append(
         YY(55), X(20), YY(9), XX(155), Y(-9),
@@ -61,7 +56,7 @@ def test_corner_cap():
 @pytest.mark.views((0, -5))
 def test_lstop_simple():
     """
-    Source: https://www.tootalltoby.com/practice/6926892f-c1e3-4d84-8ed8-359eb98d51b8
+    [Source](https://www.tootalltoby.com/practice/6926892f-c1e3-4d84-8ed8-359eb98d51b8).
     """
     l = build_line((130, 0), tangent=(0, 1)).append(
         op_arc(77, 45, name='a'), op_trim(Axis.X.offset(25, 85/2), add=True),
@@ -87,10 +82,4 @@ def test_lstop_simple():
 
 
 if __name__ == '__main__':
-    from yacv_server import show
-
-    set_current.fn()
-    sadd(origin=Sphere(slist.origin_radius()))
-    show(*slist.objects, names=slist.names)
-    # write_svg('/tmp/boo.png', slist.objects[-2])
-    # export_gltf(slist.objects[-1], '/tmp/output.glb', binary=True)
+    main_yacv()

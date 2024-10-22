@@ -5,8 +5,7 @@ import runpy
 import textwrap
 
 
-def collect_model(parent, fn):
-    img = parent + '_' + fn.__name__ + '.png'
+def clean_source(fn):
     slines, _ = inspect.getsourcelines(fn)
     body = inspect.getdoc(fn)
     if body:
@@ -15,8 +14,13 @@ def collect_model(parent, fn):
         start = next(i for i, l in enumerate(slines) if l.startswith('def ')) + 1
     end = next(i for i, l in enumerate(slines) if l.strip().startswith('assert '))
     src = ''.join(slines[start:end])
-    src = textwrap.dedent(src)
-    return {'source': src, 'img': img, 'title': fn.__name__, 'body': body}
+    return textwrap.dedent(src)
+
+
+def collect_model(parent, fn):
+    img = parent + '_' + fn.__name__ + '.png'
+    body = inspect.getdoc(fn)
+    return {'source': clean_source(fn), 'img': img, 'title': fn.__name__, 'body': body}
 
 
 def collect_models(module_path):

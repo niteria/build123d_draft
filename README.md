@@ -1,3 +1,5 @@
+![animation](./resources/animation.gif)
+
 `build123d_draft` is a collection of utilities/helpers for an amazing CAD
 [Build123d][build123d]. Build123d did a great work for hiding OCCT complexity
 behind nice pythonic interface. Though my experience with the library revealed
@@ -34,12 +36,56 @@ names and make models fully parametric.
 [build123d]: https://github.com/gumyr/build123d
 [ttt]: https://tootalltoby.com/
 
-Here are examples showcasing `build123d_draft` in action.
+Here are examples showcasing `build123d_draft` in action:
 
 
+* [TTT random models](#test_ttt_random)
 * [TTT Challenges](#test_ttt_monthly_challenge)
 * [TTT Practice](#test_ttt_practice)
 * [TTT Build123d tutorials](#test_build123d_tutorials)
+
+
+<a name="test_ttt_random"></a>
+
+## TTT random models
+
+A selection of TTT models from WC streams or other sources.
+
+
+### test_24WC_12_tube_plug
+
+[Draft](https://youtu.be/JrDNdeHMO9Q?t=71).
+
+Example uses additional variables for animation purposes.
+
+![](./assets/test_ttt_random_test_24WC_12_tube_plug.png)
+
+```python
+l1 = build_line(Plane.XZ).append(
+    op_start(X(150)), YY(111/2), X(-40), op_chamfer(8),
+    YY(65/2), X(-23), YY(84/2), op_fillet(8, 2),
+    XX(0), YY(0), op_fillet(10), op_close())
+part = l1.revolvex()
+
+l2 = build_line(Plane.XZ.move(X(150-109))).append(
+    op_start(Y(88)), XX(70/2), Y(-30), op_chamfer(8),
+    XX(58/2), YY(0), op_close(Axis.Y))
+p2 = l2.revolvey()
+part += p2
+
+hl = build_line(Plane.XZ).append(
+    op_start(X(150)), X(-109), Y(88), op_fillet(30))
+hole = hl.sweep(Circle(d=40))
+part -= hole
+
+cl = build_line(Plane.XZ).append(
+    op_start((150, 75/2), -Axis.X),
+    op_line(angle=44/2, until=YY(20)), op_close(Axis.X))
+cone = cl.revolvex()
+part -= cone
+
+
+```
 
 
 <a name="test_ttt_monthly_challenge"></a>
@@ -55,8 +101,8 @@ part mass. It's an easiest way to train your skills.
 
 ### test_24_04_LB1_u_joint_fork
 
-Source:https://www.tootalltoby.com/challenge/2024-04/drawings/  
-Draft: https://www.tootalltoby.com/media/challenges/events/models/D_LEADERBOARD_CHALLENGE_MODEL_1_IMAGE_-_APRIL.png
+[Source](https://www.tootalltoby.com/challenge/2024-04/drawings/).
+[Draft](https://www.tootalltoby.com/media/challenges/events/models/D_LEADERBOARD_CHALLENGE_MODEL_1_IMAGE_-_APRIL.png).
 
 ![](./assets/test_ttt_monthly_challenge_test_24_04_LB1_u_joint_fork.png)
 
@@ -119,7 +165,8 @@ part = part + c - c.new(d=0.625)
 
 ### test_24_05_LB1_clamp_bracket
 
-Source: https://www.tootalltoby.com/challenge/2024-05/drawings/
+[Source](https://www.tootalltoby.com/challenge/2024-05/drawings/).
+[Draft](https://www.tootalltoby.com/media/challenges/events/models/D_LEADERBOARD_CHALLENGE_MODEL_1_IMAGE_-_MAY.png).
 
 ![](./assets/test_ttt_monthly_challenge_test_24_05_LB1_clamp_bracket.png)
 
@@ -154,7 +201,8 @@ part -= Box(8, 55+15, 41, align=A.nd)
 
 ### test_24_05_LB2_chamber
 
-Source: https://www.tootalltoby.com/challenge/2024-05/drawings/
+[Source](https://www.tootalltoby.com/challenge/2024-05/drawings/).
+[Draft](https://www.tootalltoby.com/media/challenges/events/models/E_LEADERBOARD_CHALLENGE_MODEL_2_IMAGE_-_MAY.png).
 
 ![](./assets/test_ttt_monthly_challenge_test_24_05_LB2_chamber.png)
 
@@ -165,7 +213,7 @@ l = build_line((5.5/2, 3.5), Plane.XZ, Y(-1)).append(
 sk = offset(l.wire(), 0.375, side=Side.RIGHT)
 
 l.append(op_close(Axis.Y))
-bowl = l.revolvez()
+bowl = l.revolvey()
 
 p1 = revolve(split(make_face(sk.edges()), Plane.XY.offset(3.5),
                    keep=Keep.BOTTOM))
@@ -188,8 +236,8 @@ part -= Cylinder(3.5-0.5, d=0.75, align=A.d)
 
 ### test_24_05_LB3_arm_housing
 
-Source: https://www.tootalltoby.com/challenge/2024-05/drawings/  
-Draft: https://www.tootalltoby.com/media/challenges/events/models/F_LEADERBOARD_CHALLENGE_MODEL_3_IMAGE_-_MAY.png
+[Source](https://www.tootalltoby.com/challenge/2024-05/drawings/).
+[Draft](https://www.tootalltoby.com/media/challenges/events/models/F_LEADERBOARD_CHALLENGE_MODEL_3_IMAGE_-_MAY.png).
 
 ![](./assets/test_ttt_monthly_challenge_test_24_05_LB3_arm_housing.png)
 
@@ -216,8 +264,8 @@ part = p1 + c1 + c2 - c2.new(d=18) - c1.new(d=40)
 
 ### test_24_07_LB3_adj_base
 
-Source: TTT: https://www.tootalltoby.com/challenge/2024-07/drawings/  
-Draft: https://www.tootalltoby.com/media/challenges/events/models/F_LEADERBOARD_CHALLENGE_MODEL_3_IMAGE_-_JULY.png
+[Source](https://www.tootalltoby.com/challenge/2024-07/drawings/).
+[Draft](https://www.tootalltoby.com/media/challenges/events/models/F_LEADERBOARD_CHALLENGE_MODEL_3_IMAGE_-_JULY.png).
 
 ![](./assets/test_ttt_monthly_challenge_test_24_07_LB3_adj_base.png)
 
@@ -252,8 +300,8 @@ part -= cl1.new(d=13) + cl2.new(d=29) + cl3.new(d=13)
 
 ### test_24_07_LB1_foot_holder
 
-Source: TTT: https://www.tootalltoby.com/challenge/2024-07/drawings/  
-Draft: https://www.tootalltoby.com/media/challenges/events/models/D_LEADERBOARD_CHALLENGE_MODEL_1_IMAGE_-_JULY.png
+[Source](https://www.tootalltoby.com/challenge/2024-07/drawings/).
+[Draft](https://www.tootalltoby.com/media/challenges/events/models/D_LEADERBOARD_CHALLENGE_MODEL_1_IMAGE_-_JULY.png).
 
 ![](./assets/test_ttt_monthly_challenge_test_24_07_LB1_foot_holder.png)
 
@@ -281,8 +329,8 @@ part -= Pos(X=-62-42, Z=9) * -R.X * CounterSinkHole(6/2, 14/2, 50, 82)
 
 ### test_24_04_LB2_rod_end_mount
 
-Source:https://www.tootalltoby.com/challenge/2024-04/drawings/  
-Draft: https://www.tootalltoby.com/media/challenges/events/models/E_LEADERBOARD_CHALLENGE_MODEL_2_IMAGE-APRIL.png
+[Source](https://www.tootalltoby.com/challenge/2024-04/drawings/).
+[Draft](https://www.tootalltoby.com/media/challenges/events/models/E_LEADERBOARD_CHALLENGE_MODEL_2_IMAGE-APRIL.png).
 
 ![](./assets/test_ttt_monthly_challenge_test_24_04_LB2_rod_end_mount.png)
 
@@ -318,8 +366,8 @@ part = part + c - c.new(d=1.5)
 
 ### test_24_04_LB3_end_base
 
-Source:https://www.tootalltoby.com/challenge/2024-04/drawings/  
-Draft: https://www.tootalltoby.com/media/challenges/events/models/F_LEADERBOARD_CHALLENGE_MODEL_3_IMAGE_-_APRIL_SS11zYc.png
+[Source](https://www.tootalltoby.com/challenge/2024-04/drawings/).
+[Draft](https://www.tootalltoby.com/media/challenges/events/models/F_LEADERBOARD_CHALLENGE_MODEL_3_IMAGE_-_APRIL_SS11zYc.png).
 
 ![](./assets/test_ttt_monthly_challenge_test_24_04_LB3_end_base.png)
 
@@ -358,8 +406,8 @@ part -= X(218) * make_slot((218-175)*2, h=30, d=28)
 
 ### test_2024_03_10_offset_support
 
-Source: https://www.tootalltoby.com/leaderboard/2024-03/  
-Draft: https://www.tootalltoby.com/static/images/2024-03_LEADERBOARD_CHALLENGE_MODEL_1_IMAGE.png
+[Source](https://www.tootalltoby.com/leaderboard/2024-03/).
+[Draft](https://www.tootalltoby.com/static/images/2024-03_LEADERBOARD_CHALLENGE_MODEL_1_IMAGE.png).
 
 ![](./assets/test_ttt_monthly_challenge_test_2024_03_10_offset_support.png)
 
@@ -391,8 +439,8 @@ part -= lc.extrude(100, both=True)
 
 ### test_2024_03_12_side_spacer
 
-Source: https://www.tootalltoby.com/leaderboard/2024-03/  
-Draft: https://www.tootalltoby.com/static/images/2024-03_LEADERBOARD_CHALLENGE_MODEL_3_IMAGE.png
+[Source](https://www.tootalltoby.com/leaderboard/2024-03/).
+[Draft](https://www.tootalltoby.com/static/images/2024-03_LEADERBOARD_CHALLENGE_MODEL_3_IMAGE.png).
 
 ![](./assets/test_ttt_monthly_challenge_test_2024_03_12_side_spacer.png)
 
@@ -442,7 +490,7 @@ Models here are augmented for spoil-free results.
 
 ### test_corner_cap
 
-Source: https://www.tootalltoby.com/practice/a441dcaa-0d1c-42f0-b037-73786e93a9ea
+[Source](https://www.tootalltoby.com/practice/a441dcaa-0d1c-42f0-b037-73786e93a9ea).
 
 ![](./assets/test_ttt_practice_test_corner_cap.png)
 
@@ -473,7 +521,7 @@ part += rl.extrude(7)
 
 ### test_lstop_simple
 
-Source: https://www.tootalltoby.com/practice/6926892f-c1e3-4d84-8ed8-359eb98d51b8
+[Source](https://www.tootalltoby.com/practice/6926892f-c1e3-4d84-8ed8-359eb98d51b8).
 
 ![](./assets/test_ttt_practice_test_lstop_simple.png)
 
@@ -551,13 +599,13 @@ l = build_line(X(49/2), Plane.XZ).append(
     op_ellipse_arc(20, 8, 0, 90),
     op_close(Axis.Y)
 )
-base = l.revolvez()
+base = l.revolvey()
 
 hl = build_line(Plane.XZ).append(
     op_arc(17, 180, center=(-15, 20), start_angle=90))
 handle = hl.sweep(Ellipse(2, 5))
 
-part, edges = new_edges_add(handle, base)
+_, edges = new_edges_add(handle, base)
 part = fillet(edges, 1)
 
 il = build_line(X(42/2), Plane.XZ).append(
@@ -566,7 +614,7 @@ il = build_line(X(42/2), Plane.XZ).append(
     op_fillet(3),
     op_close(Axis.Y)
 )
-part -= il.revolvez()
+part -= il.revolvey()
 
 
 ```
@@ -607,7 +655,7 @@ base = l.extrude(30, both=True)
 
 c1 = Cylinder(7+21-8, d=38, align=A.d)
 
-part, edges = new_edges_add(c1, base)
+_, edges = new_edges_add(c1, base)
 part = fillet(edges.filter_by(Plane.XY), 4)
 part &= X(-38/2) * Box(80+38, 38, 100, align=A.w)
 
@@ -637,7 +685,7 @@ base = l.extrude(22) - Pos(l.a.arc_center) * Cylinder(22, d=13, align=A.d)
 base = mirror_add(base, Plane.YZ)
 
 c = RZ(-90) * Cylinder(36, d=30, align=A.d)
-part, edges = new_edges_add(c, Box(50, 30, 22, align=A.sd))
+_, edges = new_edges_add(c, Box(50, 30, 22, align=A.sd))
 part = fillet(edges.filter_by(Plane.XY), 6)
 part = base + (part & Box(30, 60, 100, align=A.d))
 
@@ -678,7 +726,7 @@ l3 = build_line().append(
 p3 = l3.extrude(13)
 p3 -= mirror_add(Pos(17-69, 75/2-17, 13) * cbore_d(15, 4, 8, 13))
 
-part, edges = new_edges_add(p2+p3, p1)
+_, edges = new_edges_add(p2+p3, p1)
 part = fillet(edges, 16)
 
 

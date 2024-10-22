@@ -4,14 +4,16 @@ import dataclasses
 
 import PIL
 
-from build123d_draft import export_image
+from build123d_draft.render import ImageExporter
 from build123d import Plane
+
 
 @dataclasses.dataclass()
 class view:
     rotz: float = 0
-    vroty: float = 0
+    roty: float = 0
     clip: Plane | None = None
+    hscale: float = 0.05
 
 
 @pytest.fixture(autouse=True)
@@ -31,9 +33,12 @@ def render(request):
                 v = view()
             elif isinstance(v, tuple):
                 v = view(*v)
-            loc = v.rotz, v.vroty
-            img = export_image(request.module.slist.objects[-1], bg=(1, 0, 1),
-                               transparent=True, loc=loc, size=size, clip=v.clip)
+
+            ie = ImageExporter(size, bg=(1, 0, 1), transparent=True)
+            ie.show(request.module.slist.objects[-1], clip=v.clip, hscale=v.hscale)
+            ie.setup_view(rotz=v.rotz, roty=v.roty)
+
+            img = ie.export()
             images.append(img)
 
         if len(images) == 1:

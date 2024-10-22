@@ -8,13 +8,12 @@ part mass. It's an easiest way to train your skills.
 
 [ttt-challenges]: https://www.tootalltoby.com/Leaderboard/
 """
-import sys
-sys.modules.pop('build123d_draft', None)
-
 from build123d import *
 from build123d_draft import *
 from pytest import approx
 import pytest
+
+from build123d_draft.testing import *
 
 
 LBF = 25.4**3 / 1000 / 0.45359237
@@ -22,16 +21,13 @@ densa = 1020e-6
 densb = 2700e-6
 densc = 7800e-6
 
-slist = ShowList()
-sadd = slist.append
-
 
 @slist
 @pytest.mark.views(None, (0, 70), size=(480, 480))
 def test_24_04_LB1_u_joint_fork():
     """
-    Source:https://www.tootalltoby.com/challenge/2024-04/drawings/  
-    Draft: https://www.tootalltoby.com/media/challenges/events/models/D_LEADERBOARD_CHALLENGE_MODEL_1_IMAGE_-_APRIL.png
+    [Source](https://www.tootalltoby.com/challenge/2024-04/drawings/).
+    [Draft](https://www.tootalltoby.com/media/challenges/events/models/D_LEADERBOARD_CHALLENGE_MODEL_1_IMAGE_-_APRIL.png).
     """
     l1 = build_line(Plane.XZ).append(
         X(42/2), Y(51), op_fillet(12),
@@ -90,7 +86,8 @@ def test_22_T_32_pivot_plate():
 @pytest.mark.views(None, (-90, 0), size=(480, 480))
 def test_24_05_LB1_clamp_bracket():
     """
-    Source: https://www.tootalltoby.com/challenge/2024-05/drawings/
+    [Source](https://www.tootalltoby.com/challenge/2024-05/drawings/).
+    [Draft](https://www.tootalltoby.com/media/challenges/events/models/D_LEADERBOARD_CHALLENGE_MODEL_1_IMAGE_-_MAY.png).
     """
     l1 = build_line((-133/2, 12)).append(
         op_line(angle=19, tangent=(1, 0), until=XX(0)),  # TODO: make axis as tangent
@@ -124,7 +121,8 @@ def test_24_05_LB1_clamp_bracket():
 @pytest.mark.views((45, 0), (45, 70), size=(480, 480))
 def test_24_05_LB2_chamber():
     """
-    Source: https://www.tootalltoby.com/challenge/2024-05/drawings/
+    [Source](https://www.tootalltoby.com/challenge/2024-05/drawings/).
+    [Draft](https://www.tootalltoby.com/media/challenges/events/models/E_LEADERBOARD_CHALLENGE_MODEL_2_IMAGE_-_MAY.png).
     """
     l = build_line((5.5/2, 3.5), Plane.XZ, Y(-1)).append(
         op_line(angle=-10, until=YY(0.75)), XX(0)
@@ -132,7 +130,7 @@ def test_24_05_LB2_chamber():
     sk = offset(l.wire(), 0.375, side=Side.RIGHT)
 
     l.append(op_close(Axis.Y))
-    bowl = l.revolvez()
+    bowl = l.revolvey()
 
     p1 = revolve(split(make_face(sk.edges()), Plane.XY.offset(3.5),
                        keep=Keep.BOTTOM))
@@ -156,8 +154,8 @@ def test_24_05_LB2_chamber():
 @slist
 def test_24_05_LB3_arm_housing():
     """
-    Source: https://www.tootalltoby.com/challenge/2024-05/drawings/  
-    Draft: https://www.tootalltoby.com/media/challenges/events/models/F_LEADERBOARD_CHALLENGE_MODEL_3_IMAGE_-_MAY.png
+    [Source](https://www.tootalltoby.com/challenge/2024-05/drawings/).
+    [Draft](https://www.tootalltoby.com/media/challenges/events/models/F_LEADERBOARD_CHALLENGE_MODEL_3_IMAGE_-_MAY.png).
     """
     l = build_line(Plane.XZ).append(
         X(38/2), Y(51-12), XX(72/2), YY(78+20), op_fillet(16),
@@ -183,8 +181,8 @@ def test_24_05_LB3_arm_housing():
 @pytest.mark.views((-90, 0))
 def test_24_07_LB3_adj_base():
     """
-    Source: TTT: https://www.tootalltoby.com/challenge/2024-07/drawings/  
-    Draft: https://www.tootalltoby.com/media/challenges/events/models/F_LEADERBOARD_CHALLENGE_MODEL_3_IMAGE_-_JULY.png
+    [Source](https://www.tootalltoby.com/challenge/2024-07/drawings/).
+    [Draft](https://www.tootalltoby.com/media/challenges/events/models/F_LEADERBOARD_CHALLENGE_MODEL_3_IMAGE_-_JULY.png).
     """
     c1 = X(127) * Circle(d=25)
     c2 = Circle(d=45)
@@ -218,8 +216,8 @@ def test_24_07_LB3_adj_base():
 @pytest.mark.views((110, 0))
 def test_24_07_LB1_foot_holder():
     """
-    Source: TTT: https://www.tootalltoby.com/challenge/2024-07/drawings/  
-    Draft: https://www.tootalltoby.com/media/challenges/events/models/D_LEADERBOARD_CHALLENGE_MODEL_1_IMAGE_-_JULY.png
+    [Source](https://www.tootalltoby.com/challenge/2024-07/drawings/).
+    [Draft](https://www.tootalltoby.com/media/challenges/events/models/D_LEADERBOARD_CHALLENGE_MODEL_1_IMAGE_-_JULY.png).
     """
     c = Cylinder(12, d=136, align=A.d)
     c -= mirror_add(Pos(Y=105/2, Z=12) * cbore_d(16, 5, 8, 12))
@@ -245,8 +243,8 @@ def test_24_07_LB1_foot_holder():
 @slist
 def test_24_04_LB2_rod_end_mount():
     """
-    Source:https://www.tootalltoby.com/challenge/2024-04/drawings/  
-    Draft: https://www.tootalltoby.com/media/challenges/events/models/E_LEADERBOARD_CHALLENGE_MODEL_2_IMAGE-APRIL.png
+    [Source](https://www.tootalltoby.com/challenge/2024-04/drawings/).
+    [Draft](https://www.tootalltoby.com/media/challenges/events/models/E_LEADERBOARD_CHALLENGE_MODEL_2_IMAGE-APRIL.png).
     """
 
     c = R.X * Cylinder(1.375, d=1.125, align=A.d)
@@ -281,8 +279,8 @@ def test_24_04_LB2_rod_end_mount():
 @pytest.mark.views((10, 5), (100, 15))
 def test_24_04_LB3_end_base():
     """
-    Source:https://www.tootalltoby.com/challenge/2024-04/drawings/  
-    Draft: https://www.tootalltoby.com/media/challenges/events/models/F_LEADERBOARD_CHALLENGE_MODEL_3_IMAGE_-_APRIL_SS11zYc.png
+    [Source](https://www.tootalltoby.com/challenge/2024-04/drawings/).
+    [Draft](https://www.tootalltoby.com/media/challenges/events/models/F_LEADERBOARD_CHALLENGE_MODEL_3_IMAGE_-_APRIL_SS11zYc.png).
     """
 
     l = build_line(Pos(218, 22), Plane.XZ).append(
@@ -320,8 +318,8 @@ def test_24_04_LB3_end_base():
 @pytest.mark.views((15, 10))
 def test_2024_03_10_offset_support():
     """
-    Source: https://www.tootalltoby.com/leaderboard/2024-03/  
-    Draft: https://www.tootalltoby.com/static/images/2024-03_LEADERBOARD_CHALLENGE_MODEL_1_IMAGE.png
+    [Source](https://www.tootalltoby.com/leaderboard/2024-03/).
+    [Draft](https://www.tootalltoby.com/static/images/2024-03_LEADERBOARD_CHALLENGE_MODEL_1_IMAGE.png).
     """
     l = build_line(Plane.XZ).append(
         op_line(start=(69, 10), angle=50, until=XX(80+33)), YY(70),
@@ -351,8 +349,8 @@ def test_2024_03_10_offset_support():
 @slist
 def test_2024_03_12_side_spacer():
     """
-    Source: https://www.tootalltoby.com/leaderboard/2024-03/  
-    Draft: https://www.tootalltoby.com/static/images/2024-03_LEADERBOARD_CHALLENGE_MODEL_3_IMAGE.png
+    [Source](https://www.tootalltoby.com/leaderboard/2024-03/).
+    [Draft](https://www.tootalltoby.com/static/images/2024-03_LEADERBOARD_CHALLENGE_MODEL_3_IMAGE.png).
     """
 
     l = build_line().append(
@@ -387,9 +385,4 @@ def test_2024_03_12_side_spacer():
 
 
 if __name__ == '__main__':
-    from yacv_server import show
-
-    set_current.fn()
-    sadd(origin=Sphere(slist.origin_radius()))
-    show(*slist.objects, names=slist.names)
-    # export_gltf(slist.objects[-1], '/tmp/output.glb', binary=True)
+    main_yacv()

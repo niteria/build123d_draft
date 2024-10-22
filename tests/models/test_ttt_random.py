@@ -1,10 +1,16 @@
 # repl-client
-import sys
-sys.modules.pop('build123d_draft', None)
+"""
+## TTT random models
 
+A selection of TTT models from WC streams or other sources.
+"""
 from build123d import *
 from build123d_draft import *
 from pytest import approx
+import pytest
+
+from tests.conftest import view
+from build123d_draft.testing import *
 
 
 LBF = 25.4**3 / 1000 / 0.45359237
@@ -12,11 +18,7 @@ densa = 1020e-6
 densb = 2700e-6
 densc = 7800e-6
 
-slist = ShowList()
-sadd = slist.append
 
-
-@set_current
 @slist
 def _test_model1():
     l = build_line(Plane.XZ).append(
@@ -37,10 +39,40 @@ def _test_model1():
     return part
 
 
-if __name__ == '__main__':
-    from yacv_server import show
+@slist
+@pytest.mark.views((30, 0), view(30, 0, clip=-Plane.XZ, hscale=0.02), size=(600, 480))
+def test_24WC_12_tube_plug():
+    """
+    [Draft](https://youtu.be/JrDNdeHMO9Q?t=71).
 
-    set_current.fn()
-    sadd(origin=Sphere(slist.origin_radius()))
-    show(*slist.objects, names=slist.names)
-    # export_gltf(slist.objects[-1], '/tmp/output.glb', binary=True)
+    Example uses additional variables for animation purposes.
+    """
+    l1 = build_line(Plane.XZ).append(
+        op_start(X(150)), YY(111/2), X(-40), op_chamfer(8),
+        YY(65/2), X(-23), YY(84/2), op_fillet(8, 2),
+        XX(0), YY(0), op_fillet(10), op_close())
+    part = l1.revolvex()
+
+    l2 = build_line(Plane.XZ.move(X(150-109))).append(
+        op_start(Y(88)), XX(70/2), Y(-30), op_chamfer(8),
+        XX(58/2), YY(0), op_close(Axis.Y))
+    p2 = l2.revolvey()
+    part += p2
+
+    hl = build_line(Plane.XZ).append(
+        op_start(X(150)), X(-109), Y(88), op_fillet(30))
+    hole = hl.sweep(Circle(d=40))
+    part -= hole
+
+    cl = build_line(Plane.XZ).append(
+        op_start((150, 75/2), -Axis.X),
+        op_line(angle=44/2, until=YY(20)), op_close(Axis.X))
+    cone = cl.revolvex()
+    part -= cone
+
+    assert part.volume*densa == approx(816.89, abs=0.01)
+    return part
+
+
+if __name__ == '__main__':
+    main_yacv()
