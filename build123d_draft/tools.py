@@ -56,10 +56,13 @@ def intersections(shape, other, tolerance=0):
     return ShapeList(r)
 
 
-def intersection(*args, sort_by=Axis.Y, idx=-1, **kwargs):
-    r = intersections(*args, **kwargs)
-    return r.sort_by(sort_by)[idx]
-
+def intersection(shape, other, near_by=None, tolerance=0):
+    # TODO: near_by could be declarative like 'end', 'start', 'center'
+    # or a param coordinate to specify point on shape instead of fixing
+    # it to the end as now
+    r = intersections(shape, other, tolerance=tolerance)
+    points = r.sort_by_distance(near_by or shape.e)
+    return points[0]
 
 
 def cbore(r1, depth1, r2, total_depth):

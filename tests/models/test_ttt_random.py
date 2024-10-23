@@ -18,7 +18,6 @@ densa = 1020e-6
 densb = 2700e-6
 densc = 7800e-6
 
-
 @slist
 def _test_model1():
     l = build_line(Plane.XZ).append(

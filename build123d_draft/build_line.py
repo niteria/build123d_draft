@@ -401,7 +401,7 @@ def op_close(lb, both=None, end=None, start=None, mirror=None):
 
 
 @build_line_op
-def op_trim(lb, point, sort_by=Axis.Y, idx=-1, add=False):
+def op_trim(lb, point, near_by=None, add=False):
     if not lb:
         return
     s = lb._shapes[-1]
@@ -411,7 +411,7 @@ def op_trim(lb, point, sort_by=Axis.Y, idx=-1, add=False):
     else:
         if isinstance(point, Axis):
             ax = point.located(lb.plane.location)
-            point = intersection(s, ax, sort_by=sort_by, idx=idx)
+            point = intersection(s, ax, near_by=near_by)
             other = Line(point, ax.position)
         param = param_on_point(s, point)
         rv = lb._shapes[-1] = trim_wire(s, end=param)
