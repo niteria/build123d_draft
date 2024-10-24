@@ -58,7 +58,10 @@ class _A:
     def __getattr__(self, desc):
         result = self.default[:]
         for c in desc:
-            p, a = _AMAP[c]
+            try:
+                p, a = _AMAP[c]
+            except KeyError:
+                raise AttributeError(desc)
             result[p] = a
         return tuple(result)
 

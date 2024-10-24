@@ -9,6 +9,7 @@ from .build_line import build_line
 def set_current(fn):
     set_current.fn = fn
     return fn
+set_current.fn = None
 
 
 class ShowList:
@@ -76,4 +77,15 @@ def main_yacv():
     set_current.fn()
     show(*slist.objects, names=slist.names)
 
-__all__ = ['slist', 'sadd', 'main_yacv', 'set_current']
+
+def main_ocp_vscode(reset=True, port=3939):
+    from ocp_vscode import show, set_port
+    set_port(3939)
+
+    reset and slist.reset()
+    sadd(origin=Sphere(1))
+    set_current.fn and set_current.fn()
+    show(*slist.objects, names=slist.names, progress='')
+
+
+__all__ = ['slist', 'sadd', 'main_yacv', 'set_current', 'main_ocp_vscode']
