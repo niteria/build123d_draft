@@ -69,21 +69,22 @@ class ShowList:
 slist = ShowList()
 sadd = slist.append
 
-def main_yacv():
+def main_yacv(reset=True):
     from yacv_server import show
-
-    slist.reset()
-    sadd(origin=Sphere(1))
-    set_current.fn()
-    show(*slist.objects, names=slist.names)
-
-
-def main_ocp_vscode(reset=True, port=3939):
-    from ocp_vscode import show, set_port
-    set_port(3939)
 
     reset and slist.reset()
     sadd(origin=Sphere(1))
+    set_current.fn and set_current.fn()
+    show(*slist.objects, names=slist.names)
+
+
+def main_ocp_vscode(reset=True, **options):
+    from ocp_vscode import show, set_port, set_defaults
+    set_port(options.pop('port', 3939))
+    if options:
+        set_defaults(**options)
+
+    reset and slist.reset()
     set_current.fn and set_current.fn()
     show(*slist.objects, names=slist.names, progress='')
 
