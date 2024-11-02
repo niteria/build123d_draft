@@ -173,11 +173,13 @@ class build_line:
                 self._named[o._lb_name] = n
 
     def __getitem__(self, idx):
-        if idx in self._named:
-            return self._named[idx]
         return self._shapes[idx]
 
-    __getattr__ = __getitem__
+    def __getattr__(self, name):
+        try:
+            return self._named[name]
+        except KeyError:
+            raise AttributeError(name)
 
     def revolvex(self):
         return revolve(self.face(), Axis.X.located(self.plane.location))
