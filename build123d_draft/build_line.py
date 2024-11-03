@@ -2,7 +2,7 @@ import math
 from itertools import chain as it_chain
 
 from build123d.geometry import Plane, Axis, Pos, Vector, Location
-from build123d.topology import Shape, ShapeList, Wire, Edge
+from build123d.topology import Shape, ShapeList, Wire, Edge, Vertex
 from build123d.objects_curve import Line, IntersectingLine, BaseLineObject, TangentArc, RadiusArc, CenterArc
 from build123d.operations_sketch import make_face
 from build123d.operations_generic import mirror, sweep, fillet, chamfer
@@ -459,33 +459,53 @@ class by_tangent:
         return rv, Line(rv @ 1, lb.to_vector(self.obj))
 
 
+def _fillet_helper(lb: build_line, count: int, closed: bool) -> tuple[int, list[Vertex], list[Wire]]:
+    l = len(lb._shapes)
+    if closed:
+        assert count <= l, f"vertex count should be less or equal than number of shapes"
+    else:
+        assert count < l, f"vertex count should be less than number of shapes"
+
+    if closed:
+        sidx = l - count
+        xs = [*range(sidx, l), 0]
+        keep = lb._shapes[1:sidx]
+    else:
+        sidx = l - 1 - count
+        xs = list(range(sidx, l))
+        keep = lb._shapes[:sidx]
+
+    to_fuse = [lb._shapes[i] for i in xs]
+    fpoints = [it.at(1) for it in to_fuse[:-1]]
+    fused = to_fuse[0].fuse(*to_fuse[1:])
+    w = Wire(fused.edges())
+    vlist = [v for v in w.vertices() if Vector(v) in fpoints]
+    return sidx, vlist, keep
+
+
 @build_line_op
-def op_fillet(lb, radius, count=1):
+def op_fillet(lb, radius, count=1, closed=False):
     if not lb:
         return
-    fpoints = [lb._shapes[-i-1] @ 0 for i in range(count)]
-    sidx = len(lb._shapes) - 1 - count
+    sidx, vlist, keep = _fillet_helper(lb, count, closed)
     spoint = lb._shapes[sidx] @ 0
-    fused = lb._shapes[sidx].fuse(*lb._shapes[sidx+1:])
-    w = Wire(fused.edges())
-    fobj = fillet([v for v in w.vertices() if Vector(v) in fpoints], radius)
-    if fobj @ 0 != spoint:
+    fobj = fillet(vlist, radius)
+    if not closed and fobj @ 0 != spoint:
         fobj.wrapped.Reverse()
-    lb._shapes[sidx:] = [fobj]
+    keep.append(fobj)
+    lb._shapes = keep
     return fobj
 
 
 @build_line_op
-def op_chamfer(lb, length, count=1, length2=None, angle=None):
+def op_chamfer(lb, length, count=1, length2=None, angle=None, closed=False):
     if not lb:
         return
-    fpoints = [lb._shapes[-i-1] @ 0 for i in range(count)]
-    sidx = len(lb._shapes) - 1 - count
+    sidx, vlist, keep = _fillet_helper(lb, count, closed)
     spoint = lb._shapes[sidx] @ 0
-    fused = lb._shapes[sidx].fuse(*lb._shapes[sidx+1:])
-    w = Wire(fused.edges())
-    fobj = chamfer([v for v in w.vertices() if Vector(v) in fpoints], length=length, length2=length2, angle=angle)
+    fobj = chamfer(vlist, length=length, length2=length2, angle=angle)
     if fobj @ 0 != spoint:
         fobj.wrapped.Reverse()
-    lb._shapes[sidx:] = [fobj]
+    keep.append(fobj)
+    lb._shapes = keep
     return fobj

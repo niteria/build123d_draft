@@ -385,4 +385,4 @@ def test_2024_03_12_side_spacer():
 
 
 if __name__ == '__main__':
-    main_yacv()
+    main_ocp_vscode()

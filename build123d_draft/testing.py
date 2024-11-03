@@ -7,8 +7,9 @@ from .build_line import build_line
 
 
 def set_current(fn):
+    import pytest
     set_current.fn = fn
-    return fn
+    return pytest.mark.current(fn)
 set_current.fn = None
 
 
@@ -69,24 +70,26 @@ class ShowList:
 slist = ShowList()
 sadd = slist.append
 
-def main_yacv(reset=True):
+def main_yacv():
     from yacv_server import show
 
-    reset and slist.reset()
+    set_current.fn and slist.reset()
     sadd(origin=Sphere(1))
     set_current.fn and set_current.fn()
     show(*slist.objects, names=slist.names)
 
 
-def main_ocp_vscode(reset=True, **options):
+def main_ocp_vscode(**options):
     from ocp_vscode import show, set_port, set_defaults
+    from ocp_vscode.config import Camera
     set_port(options.pop('port', 3939))
-    if options:
-        set_defaults(**options)
+    # if options:
+    #     set_defaults(**options)
 
-    reset and slist.reset()
-    set_current.fn and set_current.fn()
-    show(*slist.objects, names=slist.names, progress='')
+    if set_current.fn:
+        slist.reset()
+        set_current.fn()
+    show(*slist.objects, names=slist.names, progress='', reset_camera=Camera.KEEP)
 
 
 __all__ = ['slist', 'sadd', 'main_yacv', 'set_current', 'main_ocp_vscode']
