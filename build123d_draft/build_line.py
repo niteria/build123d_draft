@@ -93,8 +93,11 @@ class build_line:
                     self._shapes = rv
 
     def append(self, *ops):
-        for op in ops:
-            self.apply(op)
+        for idx, op in enumerate(ops):
+            try:
+                self.apply(op)
+            except Exception as e:
+                raise Exception(f'Error applying {op}#{idx}: {e}') from e
         return self
 
     @property
@@ -220,6 +223,12 @@ class op_data_holder:
         self.connect = connect
         self.args = args
         self.kwargs = kwargs
+
+    def __repr__(self):
+        params = []
+        params.extend(repr(it) for it in self.args)
+        params.extend(f'{k}={v!r}' for k, v in self.kwargs.items())
+        return f'{self.fn.__name__}({", ".join(params)})'
 
 
 def build_line_op(fn):
