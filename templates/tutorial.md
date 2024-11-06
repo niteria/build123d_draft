@@ -369,3 +369,11 @@ view.clear()
 view.show(l.wire(), color=BLUE, line_width=LW)
 view_setup(view, 'Z')
 ```
+
+### op_trim
+
+### op_extend
+
+### op_move
+
+### op_drop

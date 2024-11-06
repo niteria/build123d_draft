@@ -84,7 +84,15 @@ class ImageExporter:
 
         prs = OCP.AIS.AIS_Shape(shape.wrapped)
         if alpha is not None:
-            prs.SetTransparency(alpha)
+            prs_drw = prs.Attributes()
+            prs_drw.SetupOwnShadingAspect()
+            prs_sa = prs_drw.ShadingAspect()
+            mname = OCP.Graphic3d.Graphic3d_NameOfMaterial_Steel
+            m = OCP.Graphic3d.Graphic3d_MaterialAspect(mname)
+            prs_sa.SetMaterial(m)
+            prs_sa.SetColor(ocp_color(shape_color or self.default_color))
+            prs_sa.SetTransparency(alpha)
+            prs_drw.SetFaceBoundaryDraw(True)
 
         if line_width is not None:
             prs.SetWidth(line_width)

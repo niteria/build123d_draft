@@ -60,7 +60,7 @@ def animate(fname, fn, aspect=1.2):
         ie.clear(False)
         part = ctx.get('part')
         if part is not None and part is not obj:
-            ie.show(part, clip=dclip, hscale=0.02, hatch=False, alpha=0.8, edges=False, clip_outline=False)
+            ie.show(part, clip=dclip, hscale=0.02, hatch=False, alpha=0.6, edges=False, clip_outline=False)
 
         ie.show(obj, clip=clip, hscale=0.02, line_width=line_width)
 
